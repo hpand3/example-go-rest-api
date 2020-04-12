@@ -3,6 +3,7 @@ package httpd
 import (
 	"github.com/gin-gonic/gin"
 	"gorestapi/src/handler"
+	"net/http"
 )
 
 func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
@@ -12,9 +13,7 @@ func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
 
 		h.Handle(createFeedItemCommand)
 
-		c.JSON(201, gin.H{
-			"message": "Successfully created feed",
-		})
+		c.Status(http.StatusCreated)
 	}
 }
 
@@ -24,6 +23,6 @@ func GetAllItems(h *handler.GetAllFeedsQueryHandler) gin.HandlerFunc {
 
 		res := h.Handle(getAllFeedsQuery)
 
-		c.JSON(200, res)
+		c.JSON(http.StatusOK, res)
 	}
 }
