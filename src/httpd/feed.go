@@ -9,7 +9,10 @@ import (
 func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var createFeedItemCommand handler.CreateFeedItemCommand
-		c.Bind(&createFeedItemCommand)
+		err := c.Bind(&createFeedItemCommand)
+		if err != nil {
+			return
+		}
 
 		h.Handle(createFeedItemCommand)
 
