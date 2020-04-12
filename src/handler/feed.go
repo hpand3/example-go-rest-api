@@ -1,14 +1,13 @@
 package handler
 
 import (
+	"gorestapi/src/contract"
 	"gorestapi/src/domain"
+	"gorestapi/src/mapper"
 	"gorestapi/src/repository"
 )
 
-type CreateFeedItemCommand struct {
-	Title string `json:"title"`
-	Post  string `json:"post"`
-}
+type CreateFeedItemCommand contract.ItemDto
 
 type CreateFeedItemHandler struct {
 	itemRepository repository.ItemRepository
@@ -19,16 +18,12 @@ func NewCreateFeedItemHandler(itemRepository repository.ItemRepository) *CreateF
 }
 
 func (h CreateFeedItemHandler) Handle(c CreateFeedItemCommand) {
-	item := domain.Item{
-		Title: c.Title,
-		Post:  c.Post,
-	}
-	h.itemRepository.Add(item)
+	item := domain.NewItem(c.Title, c.Post)
+	h.itemRepository.Add(*item)
 }
 
-type GetAllFeedsQuery struct{}
-type GetAllFeedsResponse struct {
-	Items []domain.Item `json:"items"`
+type GetAllFeedsResponseDto struct {
+	Items []contract.ItemDto `json:"items"`
 }
 
 type GetAllFeedsQueryHandler struct {
@@ -39,8 +34,13 @@ func NewGetAllFeedsQueryHandler(itemRepository repository.ItemRepository) *GetAl
 	return &GetAllFeedsQueryHandler{itemRepository}
 }
 
-func (h GetAllFeedsQueryHandler) Handle(q GetAllFeedsQuery) GetAllFeedsResponse {
-	return GetAllFeedsResponse{
-		Items: h.itemRepository.GetAll(),
+func (h GetAllFeedsQueryHandler) Handle() GetAllFeedsResponseDto {
+	items := h.itemRepository.GetAll()
+	itemDtos := make([]contract.ItemDto, len(items))
+	for index, item := range items {
+		itemDtos[index] = mapper.MapItemToItemDto(item)
+	}
+	return GetAllFeedsResponseDto{
+		Items: itemDtos,
 	}
 }

@@ -22,9 +22,7 @@ func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
 
 func GetAllItems(h *handler.GetAllFeedsQueryHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var getAllFeedsQuery handler.GetAllFeedsQuery
-
-		res := h.Handle(getAllFeedsQuery)
+		res := h.Handle()
 
 		c.JSON(http.StatusOK, res)
 	}
