@@ -3,7 +3,6 @@ package httpd
 import (
 	"github.com/gin-gonic/gin"
 	"gorestapi/src/handler"
-	"gorestapi/src/repository"
 )
 
 func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
@@ -19,8 +18,12 @@ func AddItem(h *handler.CreateFeedItemHandler) gin.HandlerFunc {
 	}
 }
 
-func GetAllItems(feedRepo repository.ItemRepository) gin.HandlerFunc {
+func GetAllItems(h *handler.GetAllFeedsQueryHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(200, feedRepo.GetAll())
+		var getAllFeedsQuery handler.GetAllFeedsQuery
+
+		res := h.Handle(getAllFeedsQuery)
+
+		c.JSON(200, res)
 	}
 }

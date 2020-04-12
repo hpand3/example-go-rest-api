@@ -25,3 +25,22 @@ func (h CreateFeedItemHandler) Handle(c CreateFeedItemCommand) {
 	}
 	h.itemRepository.Add(item)
 }
+
+type GetAllFeedsQuery struct{}
+type GetAllFeedsResponse struct {
+	Items []domain.Item `json:"items"`
+}
+
+type GetAllFeedsQueryHandler struct {
+	itemRepository repository.ItemRepository
+}
+
+func NewGetAllFeedsQueryHandler(itemRepository repository.ItemRepository) *GetAllFeedsQueryHandler {
+	return &GetAllFeedsQueryHandler{itemRepository}
+}
+
+func (h GetAllFeedsQueryHandler) Handle(q GetAllFeedsQuery) GetAllFeedsResponse {
+	return GetAllFeedsResponse{
+		Items: h.itemRepository.GetAll(),
+	}
+}
